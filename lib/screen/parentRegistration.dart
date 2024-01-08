@@ -43,6 +43,7 @@ class _ParentRegistrationState extends State<ParentRegistration> {
     String pPassword = parentPasswordEditingController.text.trim();
     String pRePassword = parentRePassEditingController.text.trim();
     String pRole = "parent";
+    String pStatus = "Active";
     String? pId = uid;
 
     // Ensure _imageFile has been picked before creating the parent
@@ -61,6 +62,7 @@ class _ParentRegistrationState extends State<ParentRegistration> {
       parentRePassword: pRePassword,
       role: pRole,
       id: pId,
+      status: pStatus,
     );
 
 
@@ -81,6 +83,7 @@ class _ParentRegistrationState extends State<ParentRegistration> {
         'parentPassword': pPassword,
         'parentRePassword': pRePassword,
         'role': pRole,
+        'status': pStatus,
       });
 
       // Proceed with navigation or any other operations after successful document creation

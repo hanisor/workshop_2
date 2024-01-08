@@ -45,6 +45,7 @@ class _EducatorRegistrationState extends State<EducatorRegistration> {
     String ePassword = educatorPasswordEditingController.text.trim();
     String eRePassword = educatorRePassEditingController.text.trim();
     String eRole = "educator";
+    String eStatus = "Active";
     String? eId = uid;
 
     // Ensure _imageFile has been picked before creating the parent
@@ -64,6 +65,7 @@ class _EducatorRegistrationState extends State<EducatorRegistration> {
       educatorPassword: ePassword,
       educatorRePassword: eRePassword,
       role: eRole,
+      status: eStatus,
     );
 
 
@@ -86,6 +88,7 @@ class _EducatorRegistrationState extends State<EducatorRegistration> {
         'educatorPassword': ePassword,
         'educatorRePassword': eRePassword,
         'role': eRole,
+        'status': eStatus,
       });
 
       // Proceed with navigation or any other operations after successful document creation

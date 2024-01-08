@@ -131,6 +131,43 @@ class _FeedContainerPersonalPageState extends State<FeedContainerPersonalPage> {
     }
   }
 
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Feed'),
+          content: Text('Are you sure you want to delete this feed?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.black),
+              ),
+
+            ),
+            TextButton(
+              onPressed: () {
+                String? feedId = widget.feed?.id;
+                String? authorId = widget.feed?.authorId;
+                String timestamp = widget.feed.timestamp.toDate().toString().substring(0, 19);
+                Navigator.pop(context);
+                DatabaseServices.deleteFeedFromUserFeeds(feedId!, authorId!);
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -167,14 +204,7 @@ class _FeedContainerPersonalPageState extends State<FeedContainerPersonalPage> {
                             child: ListTile(
                               leading: Icon(Icons.delete),
                               title: Text('Delete'),
-                              onTap: () {
-                                String? feedId = widget.feed?.id;
-                                String? authorId = widget.feed?.authorId;
-                                String timestamp = widget.feed.timestamp.toDate().toString().substring(0, 19);
-                                Navigator.pop(context);
-                                DatabaseServices.deleteFeedFromUserFeeds(feedId!, authorId!);
-
-                              },
+                              onTap: _showDeleteConfirmationDialog, // Show the confirmation dialog
                             ),
                           ),
                         ];

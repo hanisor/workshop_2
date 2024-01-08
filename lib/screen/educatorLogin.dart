@@ -34,6 +34,7 @@ class _EducatorLogin extends State<EducatorLogin> {
       educatorPhoneNumber: '',
       educatorRePassword: '',
       role: '',
+      status: 'Active',
     );
 
     _controller.login(context, educator);

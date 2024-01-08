@@ -19,4 +19,4 @@ final feedRefs = _fireStore.collection('feeds');
 
 final likesRef = _fireStore.collection('likes');
 
-final activitiesRef = _fireStore.collection('activities');
+final feedbackRef = _fireStore.collection('feedback');

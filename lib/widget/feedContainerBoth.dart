@@ -65,6 +65,7 @@ class _FeedContainerBothState extends State<FeedContainerBoth> {
   }
 
   void _showCommentScreen() {
+    print("Navigating to comment with currentUserId: ${widget.currentUserId}");
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -156,20 +157,6 @@ class _FeedContainerBothState extends State<FeedContainerBoth> {
                     );
                   },
                 );
-              },
-            ),
-          ),
-          PopupMenuItem(
-            child: ListTile(
-              leading: Icon(Icons.delete),
-              title: Text('Delete'),
-              onTap: () {
-                String? feedId = widget.feed?.id;
-                String? authorId = widget.feed?.authorId;
-                String timestamp =
-                widget.feed.timestamp.toDate().toString().substring(0, 19);
-                Navigator.pop(context);
-                DatabaseServices.deleteFeedFromUserFeeds(feedId!, authorId!);
               },
             ),
           ),

@@ -9,6 +9,7 @@ class ParentModel {
   final String parentPassword;
   final String parentRePassword;
   final String role;
+  final String status;
 
   var parentFullName;
 
@@ -22,6 +23,7 @@ class ParentModel {
     required this.parentPassword,
     required this.parentRePassword,
     required this.role,
+    required this.status,
   });
   factory ParentModel.fromDoc(DocumentSnapshot doc) {
     Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
@@ -36,6 +38,7 @@ class ParentModel {
       parentPassword: data?['parentPassword'] ?? '',
       parentRePassword: data?['parentRePassword'] ?? '',
       role: data?['role'] ?? '',
+      status: data?['status'] ?? '',
     );
   }
 

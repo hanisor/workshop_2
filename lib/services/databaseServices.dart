@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:workshop_2/model/educatorModel.dart';
 import '../Constants/Constants.dart';
 import '../model/feedModel.dart';
+import '../model/feedbackModel.dart';
 import '../model/parentModel.dart';
 
 
@@ -125,7 +126,6 @@ class DatabaseServices {
     return feeds;
   }
 
-
   Future<ParentModel?> fetchParentDetails(String? currentUserId) async {
     if (currentUserId != null) {
       try {
@@ -200,6 +200,91 @@ class DatabaseServices {
       print('Failed to delete feed from userFeeds: $error');
     });
   }
+
+  Future<void> softDeleteUser(String? userId) async {
+    try {
+      // Check if the user exists in the 'parents' collection
+      DocumentSnapshot parentSnapshot = await FirebaseFirestore.instance
+          .collection('parents')
+          .doc(userId)
+          .get();
+
+      // Check if the user exists in the 'educators' collection
+      DocumentSnapshot educatorSnapshot = await FirebaseFirestore.instance
+          .collection('educators')
+          .doc(userId)
+          .get();
+
+      // Perform soft delete based on existence in either collection
+      if (parentSnapshot.exists) {
+        // User exists in the 'parents' collection, perform soft delete
+        await FirebaseFirestore.instance
+            .collection('parents')
+            .doc(userId)
+            .update({'status': 'Deactivate'});
+      } else if (educatorSnapshot.exists) {
+        // User exists in the 'educators' collection, perform soft delete
+        await FirebaseFirestore.instance
+            .collection('educators')
+            .doc(userId)
+            .update({'status': 'Deactivate'});
+      } else {
+        // Handle the case where the user is not found in either collection
+        print('User not found in both parents and educators collections');
+      }
+    } catch (e) {
+      print("Error soft delete: $e");
+    }
+  }
+
+  Future<void> reactivateAccount(String? userId) async {
+    try {
+      // Check if the user exists in the 'parents' collection
+      DocumentSnapshot parentSnapshot = await FirebaseFirestore.instance
+          .collection('parents')
+          .doc(userId)
+          .get();
+
+      // Check if the user exists in the 'educators' collection
+      DocumentSnapshot educatorSnapshot = await FirebaseFirestore.instance
+          .collection('educators')
+          .doc(userId)
+          .get();
+
+      // Log user details
+      print('User ID: $userId');
+      print('Parent Snapshot: ${parentSnapshot.exists}');
+      print('Educator Snapshot: ${educatorSnapshot.exists}');
+
+      // Perform soft delete based on existence in either collection
+      if (parentSnapshot.exists) {
+        // User exists in the 'parents' collection, perform soft delete
+        await FirebaseFirestore.instance
+            .collection('parents')
+            .doc(userId)
+            .update({'status': 'Active'});
+
+        // Log success message
+        print('User status updated to Active in parents collection');
+      } else if (educatorSnapshot.exists) {
+        // User exists in the 'educators' collection, perform soft delete
+        await FirebaseFirestore.instance
+            .collection('educators')
+            .doc(userId)
+            .update({'status': 'Active'});
+
+        // Log success message
+        print('User status updated to Active in educators collection');
+      } else {
+        // Handle the case where the user is not found in either collection
+        print('User not found in both parents and educators collections');
+      }
+    } catch (e) {
+      // Log error message
+      print("Error reactivate account: $e");
+    }
+  }
+
 
   static void likeFeed(String? currentUserId, Feed feed) {
     DocumentReference feedDocProfile =
@@ -286,6 +371,20 @@ class DatabaseServices {
         .get();
 
     return userDoc.exists;
+  }
+
+  Future<void> addFeedback(FeedbackModel feedback) async {
+    try {
+      await firestoreInstance.collection('feedback').add({
+        'authorId': feedback.authorId, // Include the author ID
+        'rating': feedback.rating,
+        'comment': feedback.comment,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      print('Error adding feedback: $error');
+      // Handle error
+    }
   }
 
 }

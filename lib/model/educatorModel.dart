@@ -11,6 +11,7 @@ class EducatorModel {
   final String educatorPassword;
   final String educatorRePassword;
   final String role;
+  final String status;
 
   EducatorModel ( {
     this.id,
@@ -23,6 +24,7 @@ class EducatorModel {
     required this.educatorPassword,
     required this.educatorRePassword,
     required this.role,
+    required this.status,
   });
 
   factory EducatorModel.fromDoc(DocumentSnapshot doc) {
@@ -39,6 +41,7 @@ class EducatorModel {
       educatorPassword: data?['educatorPassword'] ?? '',
       educatorRePassword: data?['educatorRePassword'] ?? '',
       role: data?['role'] ?? '',
+      status: data?['status'] ?? '',
     );
   }
 }

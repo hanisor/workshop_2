@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_2/model/parentModel.dart';
+import 'package:workshop_2/screen/settingPage.dart';
 import 'package:workshop_2/widget/feedContainerBoth.dart';
 import '../constants/constants.dart';
 import '../model/educatorModel.dart';
@@ -118,6 +119,21 @@ class _MainScreenState extends State<MainScreen> {
             color: Colors.black,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              print("Navigating to SettingPage with currentUserId: ${widget.currentUserId}");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SettingPage(currentUserId: widget.currentUserId)
+                  )
+              );
+              },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () => setupFollowingFeeds(),

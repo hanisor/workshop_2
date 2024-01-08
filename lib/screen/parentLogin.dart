@@ -30,6 +30,7 @@ class _ParentLoginState extends State<ParentLogin> {
     ParentModel parent = ParentModel(
       parentEmail: pEmail,
       parentPassword: pPassword,
+      status: 'Active',
       parentFullName: '',
       parentName: '',
       parentProfilePicture: '',

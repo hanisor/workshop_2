@@ -1,25 +1,98 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_2/Constants/Constants.dart';
+import 'package:workshop_2/screen/HomePage.dart';
+import 'package:workshop_2/screen/feedbackScreen.dart';
+import 'package:workshop_2/services/databaseServices.dart';
 
 class SettingPage extends StatelessWidget {
-  void handleTelegramSettings() {
-    // Add logic for handling Telegram settings here
+  final String? currentUserId;
+
+  const SettingPage({required this.currentUserId});
+
+  void handleLogout(BuildContext context) async {
+    bool? confirmLogout = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+            ),
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmLogout != null && confirmLogout) {
+      try {
+        await FirebaseAuth.instance.signOut();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 
-  void handleAlertNotificationSettings() {
-    // Add logic for handling alert notification settings here
-  }
+  Future<void> handleDeactivateAccount(BuildContext context) async {
+    bool? confirmDeactivation =   await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Deactivation"),
+          content: Text("Are you sure you want to deactivate your account?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+            ),
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmDeactivation != null && confirmDeactivation) {
+      // User confirmed, perform account deactivation
+      DatabaseServices databaseServices = DatabaseServices();
+      await databaseServices.softDeleteUser(currentUserId);
 
-  void handleLogout() {
-    // Add logic for handling the logout action here
+      // Redirect to login or home screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[100],
+      backgroundColor: Colors.green[50],
       appBar: AppBar(
-        title: Center(child: Text('Settings')),
-        backgroundColor: Colors.green[900], // Set app bar color to green
+        centerTitle: true,
+        title: Text('Settings'),
+        backgroundColor: AutiTrackColor2, // Set app bar color to green
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -28,75 +101,43 @@ class SettingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
-              onPressed: handleTelegramSettings,
-              child: Text('Account', style: TextStyle(color: Colors.white)),
+              child: Text('Feedback and Info',
+                  style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                primary: Colors.green[900], // Set button color to green
-              ),
+                backgroundColor: AutiTrackColor2, // Set button color to green
+              ), onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          FeedbackScreen(currentUserId: currentUserId)
+                  )
+              );
+            },
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: handleAlertNotificationSettings,
-              child: Text('Edit Profile', style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green[900], // Set button color to green
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-
-              }, child: Text('Notifications', style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor : Colors.green[900], // Set button color to green
-                ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: handleAlertNotificationSettings,
-              child: Text('Feedback and Info', style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[900], // Set button color to green
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: handleLogout,
               child: Text('Logout', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                primary: Colors.green[900], // Set button color to green
+                backgroundColor: AutiTrackColor2,
               ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(
               onPressed: () {
-                // Handle activity icon press
+                handleLogout(context);
               },
-              icon: Icon(Icons.home),
             ),
-            IconButton(
+
+            SizedBox(height: 20),
+            ElevatedButton(
               onPressed: () {
-                // Handle feedback icon press
+                handleDeactivateAccount(context);
               },
-              icon: Icon(Icons.feedback),
-            ),
-            IconButton(
-              onPressed: () {
-                // Handle graph icon press
-              },
-              icon: Icon(Icons.bar_chart),
-            ),
-            IconButton(
-              onPressed: () {
-                // Handle profile icon press
-              },
-              icon: Icon(Icons.account_circle),
+              child: Text(
+                'Deactivate Account',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AutiTrackColor2,
+              ),
             ),
           ],
         ),

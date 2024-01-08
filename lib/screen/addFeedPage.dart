@@ -77,15 +77,20 @@ class _AddFeedPageState extends State<AddFeedPage> {
 
 
   Future<void> fetchUserData() async {
+    print("Inside fetchUserData");
     // Determine user type based on currentUserId
     bool isEducatorUser = await isEducator(widget.currentUserId);
+
+    print("isEducatorUser: $isEducatorUser");
 
     if (isEducatorUser) {
       await fetchEducatorModel();
       _user = _educator; // Assign fetched EducatorModel to _user
+      print("Fetched EducatorModel: $_user");
     } else {
       await fetchParentModel();
       _user = _parent; // Assign fetched ParentModel to _user
+      print("Fetched ParentModel: $_user");
     }
   }
 
@@ -99,10 +104,10 @@ class _AddFeedPageState extends State<AddFeedPage> {
 
         if (userSnapshot.exists) {
           // Check the 'userType' field to determine the user type
-          String? educatorRole = userSnapshot['educatorRole'];
+          String? role = userSnapshot['role'];
 
           // Return true if the userType is 'educator', false otherwise
-          return educatorRole == 'educator';
+          return role == 'educator';
         }
       }
     } catch (e) {
